@@ -5,6 +5,21 @@ from lightrag.utils import EmbeddingFunc
 import os
 from transformers import AutoTokenizer, AutoModel
 from lightrag.llm.hf import hf_embed
+from opensearchpy import OpenSearch
+client = OpenSearch(
+    hosts=[{"host": "localhost", "port": 9200}],
+    http_auth=("admin", "admin"),
+    use_ssl=False,
+)
+
+# ---- VectorStore Adapter ----
+vector_store = OpenSearchVectorStore(
+    client=client,
+    index_name="rag_index",
+    vector_field="embeddings",     # your knn_vector field
+    text_field="content",          # main text field
+    metadata_field="metadata",     # nested metadata field
+)
 
 async def main():
     # Set up API configuration
