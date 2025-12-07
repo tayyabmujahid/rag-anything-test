@@ -1,4 +1,14 @@
+import sys
+
+sys.path.insert(0, "/home/mujahid/PycharmProjects/rag-anything-test/raganything-source")
+sys.path.insert(
+    0,
+    "/home/mujahid/PycharmProjects/rag-anything-test/venv/lib/python3.11/site-packages",
+)
+
+
 import asyncio
+# from __editable___raganything_1_2_8_finder import RAGAnything, RAGAnythingConfig
 from raganything import RAGAnything, RAGAnythingConfig
 from lightrag.llm.openai import openai_complete_if_cache, openai_embed
 from lightrag.utils import EmbeddingFunc
@@ -110,13 +120,19 @@ async def main():
         vision_model_func=vision_model_func,
         embedding_func=embedding_func,
     )
-
-    # Process a document
-    await rag.process_document_complete(
-        file_path="/home/mujahid/PycharmProjects/rag-anything-test/documents/Software Global Knowledge-1.pdf",
-        output_dir="./output",
-        parse_method="auto",
-    )
+    # await rag.process_document_complete(
+    #     file_path="/home/mujahid/PycharmProjects/rag-anything-test/documents/business.pdf",
+    #     output_dir="./output",
+    #     parse_method="auto",
+    # )
+    # root = "/home/mujahid/PycharmProjects/rag-anything-test/documents"
+    # for file in os.listdir(root): # Process a document
+    #     if file.endswith(".pdf"):
+    #         await rag.process_document_complete(
+    #             file_path=f"{root}/{file}",
+    #             output_dir="./output",
+    #             parse_method="auto",
+    #         )
 
     # Query the processed content
     # Pure text query - for basic knowledge base search
