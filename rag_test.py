@@ -1,4 +1,14 @@
+import sys
+
+sys.path.insert(0, "/home/mujahid/PycharmProjects/rag-anything-test/raganything-source")
+sys.path.insert(
+    0,
+    "/home/mujahid/PycharmProjects/rag-anything-test/venv/lib/python3.11/site-packages",
+)
+
+
 import asyncio
+# from __editable___raganything_1_2_8_finder import RAGAnything, RAGAnythingConfig
 from raganything import RAGAnything, RAGAnythingConfig
 from lightrag.llm.openai import openai_complete_if_cache, openai_embed
 from lightrag.utils import EmbeddingFunc
@@ -125,18 +135,29 @@ async def main():
         vision_model_func=vision_model_func,
         embedding_func=embedding_func,
     )
-
-    # Process a document
-    await rag.process_document_complete(
-        file_path="/home/mujahid/PycharmProjects/rag-anything-test/documents/Software Global Knowledge-1.pdf",
-        output_dir="./output",
-        parse_method="auto",
-    )
+    # await rag.process_document_complete(
+    #    file_path="/home/mujahid/PycharmProjects/rag-anything-test/documents/business_devices.pdf",
+    #      output_dir="./output",
+    #     parse_method="auto",
+    # )
+    for file in os.listdir("/home/mujahid/PycharmProjects/rag-anything-test/documents/")[:5]: # Process a document
+        print(f"Processing {file}")
+        if file.endswith(".pdf"):
+            await rag.process_document_complete(
+                file_path=f"/home/mujahid/PycharmProjects/rag-anything-test/documents/{file}",
+                    output_dir="./output",
+                    parse_method="auto",
+                    display_stats=True,
+                    
+                )
+        else:
+            print(f"Skipping {file}")
+        print(f"Processed {file}")
 
     # Query the processed content
     # Pure text query - for basic knowledge base search
     text_result = await rag.aquery(
-        "What are the main findings shown in the figures and tables?", mode="hybrid"
+        "How can i create an invoice here?", mode="hybrid"
     )
     print("Text query result:", text_result)
 
