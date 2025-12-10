@@ -121,23 +121,28 @@ async def main():
         embedding_func=embedding_func,
     )
     # await rag.process_document_complete(
-    #     file_path="/home/mujahid/PycharmProjects/rag-anything-test/documents/business.pdf",
-    #     output_dir="./output",
+    #    file_path="/home/mujahid/PycharmProjects/rag-anything-test/documents/business_devices.pdf",
+    #      output_dir="./output",
     #     parse_method="auto",
     # )
-    # root = "/home/mujahid/PycharmProjects/rag-anything-test/documents"
-    # for file in os.listdir(root): # Process a document
-    #     if file.endswith(".pdf"):
-    #         await rag.process_document_complete(
-    #             file_path=f"{root}/{file}",
-    #             output_dir="./output",
-    #             parse_method="auto",
-    #         )
+    for file in os.listdir("/home/mujahid/PycharmProjects/rag-anything-test/documents/")[:5]: # Process a document
+        print(f"Processing {file}")
+        if file.endswith(".pdf"):
+            await rag.process_document_complete(
+                file_path=f"/home/mujahid/PycharmProjects/rag-anything-test/documents/{file}",
+                    output_dir="./output",
+                    parse_method="auto",
+                    display_stats=True,
+                    
+                )
+        else:
+            print(f"Skipping {file}")
+        print(f"Processed {file}")
 
     # Query the processed content
     # Pure text query - for basic knowledge base search
     text_result = await rag.aquery(
-        "What are the main findings shown in the figures and tables?", mode="hybrid"
+        "How can i create an invoice here?", mode="hybrid"
     )
     print("Text query result:", text_result)
 
