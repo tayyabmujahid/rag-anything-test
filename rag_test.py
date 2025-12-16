@@ -1,9 +1,12 @@
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
+
 import sys
 
 sys.path.insert(0, "/home/mujahid/PycharmProjects/rag-anything-test/raganything-source")
 sys.path.insert(
     0,
-    "/home/mujahid/PycharmProjects/rag-anything-test/venv/lib/python3.11/site-packages",
+    "/home/mujahid/PycharmProjects/rag-anything-test/venv/lib/python3.12/site-packages",
 )
 
 
@@ -22,14 +25,14 @@ client = OpenSearch(
     use_ssl=False,
 )
 
-# ---- VectorStore Adapter ----
-vector_store = OpenSearchVectorStore(
-    client=client,
-    index_name="rag_index",
-    vector_field="embeddings",     # your knn_vector field
-    text_field="content",          # main text field
-    metadata_field="metadata",     # nested metadata field
-)
+# # ---- VectorStore Adapter ----
+# vector_store = OpenSearchVectorStore(
+#     client=client,
+#     index_name="rag_index",
+#     vector_field="embeddings",     # your knn_vector field
+#     text_field="content",          # main text field
+#     metadata_field="metadata",     # nested metadata field
+# )
 
 async def main():
     # Set up API configuration
@@ -140,7 +143,7 @@ async def main():
     #      output_dir="./output",
     #     parse_method="auto",
     # )
-    for file in os.listdir("/home/mujahid/PycharmProjects/rag-anything-test/documents/")[:5]: # Process a document
+    for file in os.listdir("/home/mujahid/PycharmProjects/rag-anything-test/documents/")[:2]: # Process a document
         print(f"Processing {file}")
         if file.endswith(".pdf"):
             await rag.process_document_complete(

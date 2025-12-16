@@ -1,0 +1,16 @@
+{
+  "chunk-54d555b5782f3e9e45091d7064f9a964": {
+    "tokens": 2,
+    "content": "Your text",
+    "chunk_order_index": 0,
+    "full_doc_id": "doc-54d555b5782f3e9e45091d7064f9a964",
+    "file_path": "unknown_source",
+    "llm_cache_list": [
+      "default:extract:5c44ae02116dbbd2bed47ca23157c848",
+      "default:extract:78fe78ef7b28e1549b15735be6186e7d"
+    ],
+    "create_time": 1763382256,
+    "update_time": 1763382270,
+    "_id": "chunk-54d555b5782f3e9e45091d7064f9a964"
+  }
+}

@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d13" for="edge" attr.name="truncate" attr.type="string" />
+  <key id="d12" for="edge" attr.name="created_at" attr.type="long" />
+  <key id="d11" for="edge" attr.name="file_path" attr.type="string" />
+  <key id="d10" for="edge" attr.name="source_id" attr.type="string" />
+  <key id="d9" for="edge" attr.name="keywords" attr.type="string" />
+  <key id="d8" for="edge" attr.name="description" attr.type="string" />
+  <key id="d7" for="edge" attr.name="weight" attr.type="double" />
+  <key id="d6" for="node" attr.name="truncate" attr.type="string" />
+  <key id="d5" for="node" attr.name="created_at" attr.type="long" />
+  <key id="d4" for="node" attr.name="file_path" attr.type="string" />
+  <key id="d3" for="node" attr.name="source_id" attr.type="string" />
+  <key id="d2" for="node" attr.name="description" attr.type="string" />
+  <key id="d1" for="node" attr.name="entity_type" attr.type="string" />
+  <key id="d0" for="node" attr.name="entity_id" attr.type="string" />
+  <graph edgedefault="undirected">
+    <node id="World Athletics Championship">
+      <data key="d0">World Athletics Championship</data>
+      <data key="d1">event</data>
+      <data key="d2">The World Athletics Championship is a global sports competition featuring top athletes in track and field.</data>
+      <data key="d3">chunk-54d555b5782f3e9e45091d7064f9a964</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1763382270</data>
+      <data key="d6" />
+    </node>
+    <node id="Tokyo">
+      <data key="d0">Tokyo</data>
+      <data key="d1">location</data>
+      <data key="d2">Tokyo is the host city of the World Athletics Championship.</data>
+      <data key="d3">chunk-54d555b5782f3e9e45091d7064f9a964</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1763382270</data>
+      <data key="d6" />
+    </node>
+    <node id="Noah Carter">
+      <data key="d0">Noah Carter</data>
+      <data key="d1">person</data>
+      <data key="d2">Noah Carter is a sprinter who set a new record in the 100m sprint at the World Athletics Championship.</data>
+      <data key="d3">chunk-54d555b5782f3e9e45091d7064f9a964</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1763382270</data>
+      <data key="d6" />
+    </node>
+    <node id="100m Sprint Record">
+      <data key="d0">100m Sprint Record</data>
+      <data key="d1">concept</data>
+      <data key="d2">The 100m sprint record is a benchmark in athletics, recently broken by Noah Carter.</data>
+      <data key="d3">chunk-54d555b5782f3e9e45091d7064f9a964</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1763382270</data>
+      <data key="d6" />
+    </node>
+    <node id="Carbon-Fiber Spikes">
+      <data key="d0">Carbon-Fiber Spikes</data>
+      <data key="d1">artifact</data>
+      <data key="d2">Carbon-fiber spikes are advanced sprinting shoes that provide enhanced speed and traction.</data>
+      <data key="d3">chunk-54d555b5782f3e9e45091d7064f9a964</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1763382270</data>
+      <data key="d6" />
+    </node>
+    <edge source="World Athletics Championship" target="Tokyo">
+      <data key="d7">1.0</data>
+      <data key="d8">The World Athletics Championship is being hosted in Tokyo.</data>
+      <data key="d9">event location,international competition</data>
+      <data key="d10">chunk-54d555b5782f3e9e45091d7064f9a964</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1763382271</data>
+      <data key="d13" />
+    </edge>
+    <edge source="World Athletics Championship" target="Noah Carter">
+      <data key="d7">1.0</data>
+      <data key="d8">Noah Carter is competing at the World Athletics Championship.</data>
+      <data key="d9">athlete participation,competition</data>
+      <data key="d10">chunk-54d555b5782f3e9e45091d7064f9a964</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1763382274</data>
+      <data key="d13" />
+    </edge>
+    <edge source="Noah Carter" target="100m Sprint Record">
+      <data key="d7">1.0</data>
+      <data key="d8">Noah Carter set a new 100m sprint record at the championship.</data>
+      <data key="d9">athlete achievement,record-breaking</data>
+      <data key="d10">chunk-54d555b5782f3e9e45091d7064f9a964</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1763382271</data>
+      <data key="d13" />
+    </edge>
+    <edge source="Noah Carter" target="Carbon-Fiber Spikes">
+      <data key="d7">1.0</data>
+      <data key="d8">Noah Carter used carbon-fiber spikes to enhance performance during the race.</data>
+      <data key="d9">athletic equipment,performance boost</data>
+      <data key="d10">chunk-54d555b5782f3e9e45091d7064f9a964</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1763382273</data>
+      <data key="d13" />
+    </edge>
+  </graph>
+</graphml>
