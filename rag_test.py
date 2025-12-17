@@ -19,6 +19,8 @@ import os
 from transformers import AutoTokenizer, AutoModel
 from lightrag.llm.hf import hf_embed
 from opensearchpy import OpenSearch
+import asyncio
+import nest_asyncio
 client = OpenSearch(
     hosts=[{"host": "localhost", "port": 9200}],
     http_auth=("admin", "admin"),

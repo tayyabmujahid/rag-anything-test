@@ -1,108 +1,61 @@
 import os
+import os
 os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
-
-import os
 import sys
+
 sys.path.insert(0, "/home/mujahid/PycharmProjects/rag-anything-test/raganything-source")
 sys.path.insert(
     0,
     "/home/mujahid/PycharmProjects/rag-anything-test/venv/lib/python3.12/site-packages",
 )
-import asyncio
-from lightrag.utils import EmbeddingFunc, logger
-from raganything import RAGAnything, RAGAnythingConfig
+
 from lightrag import LightRAG, QueryParam
-
+from lightrag.llm.hf import hf_model_complete, hf_embed
+from lightrag.utils import EmbeddingFunc
 from transformers import AutoModel, AutoTokenizer
+from lightrag.llm.openai import gpt_4o_mini_complete,openai_complete_if_cache
 
-# ---- CONFIG ----
-DOCS_DIR = "/home/mujahid/PycharmProjects/rag-anything-test/documents_lite"
-OUTPUT_DIR = "./output"   # RAG index/output directory
+import asyncio
+import nest_asyncio
+
+nest_asyncio.apply()
+api_key = os.getenv("OPENAI_API_KEY")
 WORKING_DIR = "./rag_storage"
+def llm_model_func(prompt, system_prompt=None, history_messages=[], **kwargs):
+    return openai_complete_if_cache(
+            "gpt-4o-mini",
+            prompt,
+            system_prompt=system_prompt,
+            history_messages=history_messages,
+            api_key=api_key,
+            # base_url=base_url,
+            **kwargs,
+        )
+async def initialize_rag():
 
-BGE_MODEL_NAME = "BAAI/bge-m3"
-
-# ---- Embedding function using bge-m3 ----
-# (The bge-m3 model outputs 1024-dimensional embeddings.)
-
-def bge_embed(texts):
-    # NOTE: Downloading the model may take some time at first run.
-    tokenizer = AutoTokenizer.from_pretrained(BGE_MODEL_NAME)
-    model = AutoModel.from_pretrained(BGE_MODEL_NAME)
-    model = model.to("cpu")
-    # Batched inference
-    import torch
-    with torch.no_grad():
-        inputs = tokenizer(texts, padding=True, truncation=True, return_tensors="pt")
-        outputs = model(**inputs)
-        embeddings = outputs.last_hidden_state[:, 0, :].cpu().numpy()
-    return embeddings
-
-embedding_func = EmbeddingFunc(
-    embedding_dim=1024,
-    max_token_size=8192,
-    func=bge_embed
-)
-
-# ---- Index Documents with RAGAnything ----
-async def index_documents_with_raganything():
-    config = RAGAnythingConfig(
+    embedding_func = EmbeddingFunc(
+        embedding_dim=1024,
+        max_token_size=8192,
+        func=lambda texts: hf_embed(
+            texts,
+            tokenizer=AutoTokenizer.from_pretrained("BAAI/bge-large-en-v1.5"),
+            embed_model=AutoModel.from_pretrained("BAAI/bge-large-en-v1.5"),
+        ),
+    )
+    lightrag = LightRAG(
         working_dir=WORKING_DIR,
-        enable_image_processing=False,
-        enable_table_processing=False,
-        enable_equation_processing=False,
-    )
-
-    rag = RAGAnything(
-        config=config,
-        embedding_func=embedding_func,
-        # For local embedding only -- don't need LLM here, so provide dummy func
-        llm_model_func=lambda prompt, **kwargs: "",
-        vision_model_func=None,
-    )
-
-    # Recursively find all files in DOCS_DIR
-    file_list = []
-    for root, dirs, files in os.walk(DOCS_DIR):
-        for file in files:
-            if file.lower().endswith(('.txt', '.md', '.pdf', '.docx')):
-                file_list.append(os.path.join(root, file))
-    print(f"Found {len(file_list)} files to index.")
-    
-    # Index each file
-    for file_path in file_list:
-        print(f"Indexing: {file_path}")
-        await rag.process_document_complete(
-            file_path=file_path,
-            output_dir=OUTPUT_DIR,
-            parse_method="auto"
+        llm_model_func=llm_model_func,        
+        embedding_func=embedding_func
         )
 
-# ---- Query using LightRAG ----
-def query_light_rag():
-    # Important: Use the same working_dir as for indexing!
-    rag = LightRAG(
-        working_dir=WORKING_DIR,
-        embedding_func=embedding_func,
-        llm_model_func=lambda prompt, **kwargs: "Dummy answer (LLM not used here)",
-        llm_model_name=None,
-    )
-    rag.initialize_storages()  # If not already initialized
+    await lightrag.initialize_storages()  # Auto-initializes pipeline_status
+    return lightrag
 
-    question = "What are the main topics in these documents?"
-
-    print("\n--- Query Results (hybrid) ---")
-    result = rag.query(question, param=QueryParam(mode="hybrid"))
-    print(result)
-
-# ---- MAIN ----
 def main():
-    # Step 1: Index the document directory
-    asyncio.run(index_documents_with_raganything())
-
-    # Step 2: Query the store using LightRAG
-    query_light_rag()
+    lightrag = asyncio.run(initialize_rag())
+    text_result = lightrag.query("how can i create an invoice here?",param=QueryParam(mode="hybrid"))
+    print(text_result)
 
 if __name__ == "__main__":
     main()
