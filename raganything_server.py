@@ -28,8 +28,8 @@ class QueryRequest(BaseModel):
     query: str
     mode: str = "hybrid"
     stream: bool = False
-
-
+    include_references: bool = True
+    include_chunk_content: bool = True
 rag: RAGAnything = None
 
 
@@ -90,27 +90,30 @@ def create_llm_func(api_key: str, stream: bool = False):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global rag
-    api_key = os.getenv("OPENAI_API_KEY")
+    global lightrag
+    # api_key = os.getenv("OPENAI_API_KEY")
 
-    config = RAGAnythingConfig(
-        working_dir="./rag_storage",
-        parser="mineru",
-        enable_image_processing=True,
-    )
-
-    # Initialize with non-streaming LLM for indexing
-    rag = RAGAnything(
-        config=config,
-        llm_model_func=create_llm_func(api_key, stream=False),
-        embedding_func=EmbeddingFunc(
-            embedding_dim=1536,
-            max_token_size=8192,
-            func=lambda texts: openai_embed(texts, api_key=api_key),
+    # config = RAGAnythingConfig(
+    #     working_dir="./rag_storage",
+    #     parser="mineru",
+    #     enable_image_processing=True,
+    # )
+    embedding_func = EmbeddingFunc(
+        embedding_dim=1024,
+        max_token_size=8192,
+        func=lambda texts: hf_embed(
+            texts,
+            tokenizer=AutoTokenizer.from_pretrained("BAAI/bge-large-en-v1.5"),
+            embed_model=AutoModel.from_pretrained("BAAI/bge-large-en-v1.5"),
         ),
     )
+    lightrag = LightRAG(
+        working_dir=WORKING_DIR,
+        llm_model_func=llm_model_func,        
+        embedding_func=embedding_func
+        )
 
-    await rag.lightrag.initialize_storages()
+    await lightrag.initialize_storages()
     yield
 
 
@@ -175,13 +178,15 @@ lightrag = initialize_rag()
 @app.post("/query")
 async def query(request: QueryRequest):
     try:
-        param = request.to_query_params(
-            False
-        )  # Ensure stream=False for non-streaming endpoint
+        # param = request.to_query_params(
+        #      False
+        #  )  # Ensure stream=False for non-streaming endpoint
         # Force stream=False for /query endpoint regardless of include_references setting
-        param.stream = False
+        
+        # param.stream = False
          # Unified approach: always use aquery_llm for both cases
-        result = await lightrag.aquery_llm(request.query, param=param)
+        # result = await lightrag.aquery_llm(request.query, param=param)
+        result = await lightrag.aquery_llm(request.query)
 
             # Extract LLM response and references from unified result
         llm_response = result.get("llm_response", {})
@@ -222,7 +227,8 @@ async def query(request: QueryRequest):
         else:
             return QueryResponse(response=response_content, references=None)
     except Exception as e:
-        print(f"Error processing query: {str(e)}", exc_info=True)
+        # print(f"Error processing query: {str(e)}", exc_info=True)
+        print(f"Error processing query: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
